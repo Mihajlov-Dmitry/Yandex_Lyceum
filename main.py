@@ -1,4 +1,7 @@
 import sys
+
+import PyQt6
+
 import sqlite_function
 from PyQt6 import uic
 from PyQt6.QtCore import Qt, QEvent
@@ -8,7 +11,8 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QInputDialog, QListWidget
 class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('data\\untitled.ui', self)
+        uic.loadUi(r'utils/untitled.ui', self)
+        """___________________________________ПОДКЛЮЧЕНИЕ КНОПОК______________________________________"""
 
         self.listWidget_1.addItems([i[0] for i in sqlite_function.select(1)])
         self.button_add_1.clicked.connect(lambda: self.add_element(self.listWidget_1))
@@ -72,33 +76,72 @@ class MyWidget(QMainWindow):
         self.button_remove_7_3.clicked.connect(lambda: self.remove_element(self.listWidget_7_3))
         self.button_clear_7_3.clicked.connect(lambda: self.clear_list(self.listWidget_7_3))
 
-    def add_element(self, list_widget):
+    def add_element(self, list_widget: PyQt6.QtWidgets.QListWidget) -> None:
+        """
+        Добавление в List Widget нового элемента
+        :param list_widget: ссылка на List Widget, в который необходимо вывести новые данные
+        :return: None
+        """
+
         text, ok = QInputDialog.getText(self, 'Добавить записку', 'Введите название или вставьте ссылку')
         if ok and text:
             list_widget.addItem(text)
 
-    def insert_element(self, list_widget):
+    def insert_element(self, list_widget: PyQt6.QtWidgets.QListWidget) -> None:
+        """
+        Добавление нового элемента после выбранного в List Widget
+        :param list_widget: ссылка на List Widget, в котором необходимо вставить новые данные
+        :return: None
+        """
+
         text, ok = QInputDialog.getText(self, 'Вставить записку', 'Введите название или вставьте ссылку')
         if ok and text:
             current_row = list_widget.currentRow()
             list_widget.insertItem(current_row + 1, text)
 
-    def remove_element(self, list_widget):
+    def remove_element(self, list_widget: PyQt6.QtWidgets.QListWidget) -> None:
+        """
+        Удаление выбранного элемента из List Widget
+        :param list_widget: ссылка на List Widget, в котором необходимо удалить данные
+        :return: None
+        """
+
         current_row = list_widget.currentRow()
         if current_row >= 0:
             current_item = list_widget.takeItem(current_row)
             del current_item
 
-    def clear_list(self, list_widget):
+    def clear_list(self, list_widget: PyQt6.QtWidgets.QListWidget) -> None:
+        """
+        Очистка List Widget
+        :param list_widget: ссылка на List Widget, который необходимо очистить
+        :return: None
+        """
+
         list_widget.clear()
 
-    def find_date(self):
+    """__________________________________РАБОТА КАЛЕНДАРЯ______________________________________"""
+
+    def find_date(self) -> None:
+        """
+        Сохранение выбранной даты и времени в формате дд.мм.гггг-мм.чч с информацией о событии
+        :return: None
+        """
+
         string_date = self.calendarWidget.selectedDate().toPyDate()
         time_date = self.timeEdit.time().toPyTime()
 
         self.listWidget_4.addItem(f"{string_date}-{time_date} - {self.textEdit_4.toPlainText()}")
 
-    def closeEvent(self, event):
+    """__________________________________СОХРАНЕНИЕ ДАННЫХ______________________________________"""
+
+    def closeEvent(self, event: PyQt6.QtGui.QCloseEvent) -> None:
+        """
+        Сохранение данных в бд SQLite при попытке закрытия программы
+        :param event: PyQt6.QtGui.QCloseEvent
+        :return: None
+        """
+
         sqlite_function.delete(1)
         for element in [self.listWidget_1.item(x).text() for x in range(self.listWidget_1.count())]:
             sqlite_function.insert(element, 1)
@@ -145,7 +188,12 @@ class MyWidget(QMainWindow):
 
         event.accept()
 
-    def contextMenuEvent(self, event):
+    def contextMenuEvent(self, event) -> None:
+        """
+        Перемещение элементов из одного List Widget кладки в другие
+        :param event: PyQt6.QtGui.QCloseEvent
+        :return: None
+        """
         context_menu = QMenu(self)
         action1 = context_menu.addAction("Корзина")
         action2 = context_menu.addAction("Текущие действия")
@@ -162,15 +210,18 @@ class MyWidget(QMainWindow):
             print("Action 1 selected")
         elif action == action2:
             print("Action 2 selected")
+        elif action == action3:
+            print("Action 3 selected")
         elif action == action4:
-            print("Action 3 selected")
+            print("Action 4 selected")
         elif action == action5:
-            print("Action 3 selected")
+            print("Action 5 selected")
         elif action == action6:
-            print("Action 2 selected")
+            print("Action 6 selected")
         elif action == action7:
-            print("Action 3 selected")
+            print("Action 7 selected")
         elif action == action8:
+            print("Action 7 selected")
             print("Action 3 selected")
 
 
