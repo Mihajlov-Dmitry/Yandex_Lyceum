@@ -7,7 +7,14 @@ connection = {
     1: "basket",
     21: "now_1",
     22: "now_2",
-    4: "calendar"
+    3: "expectation",
+    4: "calendar",
+    5: "projects",
+    61: "then_1",
+    62: "then_2",
+    71: "notes_1",
+    72: "notes_2",
+    73: "notes_2"
 }
 
 
@@ -21,9 +28,6 @@ def delete(id):
     db.commit()
 
 
-
 def select(id):
     cur.execute(f"SELECT * FROM {connection[id]}")
     return cur.fetchall()
-
-
